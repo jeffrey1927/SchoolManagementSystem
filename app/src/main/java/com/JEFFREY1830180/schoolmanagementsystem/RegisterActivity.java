@@ -24,12 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegisterActivity extends AppCompatActivity  {
 
     private FirebaseAuth mAuth;
-    private EditText editTextEmail, editTextId, editTextPassword, editTextConformPassword;
+    private EditText editTextEmail, editTextId, editTextPassword, editTextConformPassword , editTextPersonName;
     private RadioGroup radioGroup;
     private RadioButton radioBtnStudent, radioBtnStaff;
     private ProgressBar progressBar;
     private Button registerBtn;
-    DatabaseReference databaseReference;
+    private DatabaseReference databaseReference;
 
 
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -40,6 +40,7 @@ public class RegisterActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_register);
 
         editTextEmail = findViewById(R.id.editTextTextEmailAddress2);
+        editTextPersonName = findViewById(R.id.editTextTextPersonName);
         editTextId = findViewById(R.id.editTextNumber);
         editTextPassword = findViewById(R.id.editTextTextPassword2);
         editTextConformPassword = findViewById(R.id.editTextTextPassword3);
@@ -50,14 +51,16 @@ public class RegisterActivity extends AppCompatActivity  {
         progressBar.setVisibility(View.GONE);
         registerBtn = findViewById(R.id.button2);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference = FirebaseDatabase.getInstance().getReference("User");
 
         mAuth = FirebaseAuth.getInstance();
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String accountType = "";
+                final String name = editTextPersonName.getText().toString();
                 final String email = editTextEmail.getText().toString();
                 final String id = editTextId.getText().toString();
                 String password = editTextPassword.getText().toString();
@@ -65,13 +68,19 @@ public class RegisterActivity extends AppCompatActivity  {
 
                 if (radioBtnStudent.isChecked()){
 
-                    accountType = "Students";
+                    accountType = "Student";
                 }
 
 
                 if (radioBtnStaff.isChecked()){
 
                     accountType = "Staff";
+                }
+
+                if (name.isEmpty()) {
+                    editTextPersonName.setError("Name Required");
+                    editTextPersonName.requestFocus();
+                    return;
                 }
 
 
@@ -126,6 +135,7 @@ public class RegisterActivity extends AppCompatActivity  {
 
 
                 final String finalAccountType = accountType;
+
                 mAuth.createUserWithEmailAndPassword(email, ConPassword)
                         .addOnCompleteListener(RegisterActivity.this,new OnCompleteListener<AuthResult>() {
                             @Override
@@ -134,9 +144,8 @@ public class RegisterActivity extends AppCompatActivity  {
                                 if (task.isSuccessful()) {
 
                                     User information = new User(
-                                            id,
-                                            email,
-                                            finalAccountType
+                                            email,id,name,finalAccountType
+
 
                                     );
 

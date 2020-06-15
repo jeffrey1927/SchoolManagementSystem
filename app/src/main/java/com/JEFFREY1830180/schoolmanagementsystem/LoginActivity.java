@@ -28,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends AppCompatActivity {
     EditText emailId, password;
     Button btnSignIn;
-
     FirebaseAuth firebaseAuth;
     private ProgressBar progressBar;
     DatabaseReference databaseReference;
@@ -47,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.editTextTextPassword);
         btnSignIn = findViewById(R.id.button);
 
+
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
 
@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String userLoginEmail = emailId.getText().toString();
                 String userLoginPassword = password.getText().toString();
+
 
                 if(!TextUtils.isEmpty(userLoginEmail)&& !TextUtils.isEmpty(userLoginPassword)) {
 
@@ -82,11 +83,12 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                             String RegisteredUserID = currentUser.getUid();
 
-                            databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(RegisteredUserID);
 
+                            databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(RegisteredUserID);
                             databaseReference.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
 
                                     String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
                                     if (userType.equals("Student")) {
@@ -112,6 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
+
+
                                     progressBar.setVisibility(View.VISIBLE);
                                 }
 
