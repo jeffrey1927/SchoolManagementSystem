@@ -26,7 +26,7 @@ public class RegisterActivity extends AppCompatActivity  {
     private FirebaseAuth mAuth;
     private EditText editTextEmail, editTextId, editTextPassword, editTextConformPassword , editTextPersonName;
     private RadioGroup radioGroup;
-    private RadioButton radioBtnStudent, radioBtnStaff;
+    private RadioButton radioBtnAdmin, radioBtnStaff;
     private ProgressBar progressBar;
     private Button registerBtn;
     private DatabaseReference databaseReference;
@@ -45,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity  {
         editTextPassword = findViewById(R.id.editTextTextPassword2);
         editTextConformPassword = findViewById(R.id.editTextTextPassword3);
         radioGroup = findViewById(R.id.radioGroup);
-        radioBtnStudent = findViewById(R.id.radioButton3);
+        radioBtnAdmin = findViewById(R.id.radioButton3);
         radioBtnStaff = findViewById(R.id.radioButton2);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -66,9 +66,9 @@ public class RegisterActivity extends AppCompatActivity  {
                 String password = editTextPassword.getText().toString();
                 String ConPassword = editTextConformPassword.getText().toString();
 
-                if (radioBtnStudent.isChecked()){
+                if (radioBtnAdmin.isChecked()){
 
-                    accountType = "Student";
+                    accountType = "Admin";
                 }
 
 

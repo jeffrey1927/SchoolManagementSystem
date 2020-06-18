@@ -22,13 +22,27 @@ import com.google.firebase.database.ValueEventListener;
 public class ProfileActivity extends AppCompatActivity {
 
 
-    private TextView textViewName;
+    private TextView textViewName,textViewShowEmail,textViewShowAccount,textViewChangePass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         textViewName = findViewById(R.id.textViewName);
+        textViewShowEmail = findViewById(R.id.textViewShowEmail);
+        textViewShowAccount = findViewById(R.id.textViewShowAccount);
+        textViewChangePass = findViewById(R.id.textViewChangePass);
+
+        textViewChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this,ChangePasswordActivity.class);
+                startActivity(intent);
+
+
+
+            }
+        });
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String RegisteredUserID = currentUser.getUid();
@@ -38,7 +52,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("Name").getValue().toString();
+                String email = dataSnapshot.child("Email").getValue().toString();
+                String account = dataSnapshot.child("TypeOfAccount").getValue().toString();
                 textViewName.setText(name);
+                textViewShowEmail.setText("Email: "+email);
+                textViewShowAccount.setText("Account Type: "+account);
 
             }
 
