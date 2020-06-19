@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity  {
         progressBar.setVisibility(View.GONE);
         registerBtn = findViewById(R.id.button2);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Staff");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -143,13 +143,13 @@ public class RegisterActivity extends AppCompatActivity  {
 
                                 if (task.isSuccessful()) {
 
-                                    User information = new User(
+                                    Staff information = new Staff(
                                             email,id,name,finalAccountType
 
 
                                     );
 
-                                    FirebaseDatabase.getInstance().getReference("Users")
+                                    FirebaseDatabase.getInstance().getReference("Staff")
                                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             .setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
