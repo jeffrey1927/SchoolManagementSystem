@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignIn;
     FirebaseAuth firebaseAuth;
     private ProgressBar progressBar;
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReferenceStaff,databaseReferenceStudent;
 
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -83,21 +83,37 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                             String RegisteredUserID = currentUser.getUid();
 
+                            databaseReferenceStaff = FirebaseDatabase.getInstance().getReference().child("Staff").child(RegisteredUserID);
+                            databaseReferenceStudent = FirebaseDatabase.getInstance().getReference().child("Student").child(RegisteredUserID);
 
-                            databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(RegisteredUserID);
-                            databaseReference.addValueEventListener(new ValueEventListener() {
+                            databaseReferenceStudent.addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
-                                    if (userType.equals("Student")) {
+
+                                    if (userType.equals("Student")){
                                         Intent intentStudent = new Intent(LoginActivity.this, StudentActivity.class);
                                         startActivity(intentStudent);
                                         intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         finish();
+                                    }else {
+                                        Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    progressBar.setVisibility(View.VISIBLE);
+                                }
 
-                                    } else if (userType.equals("Staff")) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            databaseReferenceStaff.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
+                                        if (userType.equals("Staff")) {
                                         Intent intentStaff = new Intent(LoginActivity.this, StaffActivity.class);
                                         startActivity(intentStaff);
                                         intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

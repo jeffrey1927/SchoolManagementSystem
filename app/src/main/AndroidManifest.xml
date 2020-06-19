@@ -11,7 +11,10 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CourseActivity"></activity>
+        <activity android:name=".RegisterChooseActivity"></activity>
+        <activity android:name=".CurrentCourseActivity" />
+        <activity android:name=".AddCourseActivity" />
+        <activity android:name=".CourseActivity" />
         <activity android:name=".StudentRegisterActivity" />
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".ProfileActivity" />
