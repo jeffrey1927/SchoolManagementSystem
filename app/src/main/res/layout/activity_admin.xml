@@ -36,7 +36,7 @@
         app:srcCompat="@drawable/register" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/imageViewAdminCourse"
         android:layout_width="127dp"
         android:layout_height="122dp"
         app:layout_constraintBottom_toBottomOf="parent"

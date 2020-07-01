@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.721" />
 
     <ImageView
-        android:id="@+id/imageView17"
+        android:id="@+id/imageViewAddCoure"
         android:layout_width="130dp"
         android:layout_height="126dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +48,7 @@
         app:layout_constraintVertical_bias="0.057" />
 
     <ImageView
-        android:id="@+id/imageView19"
+        android:id="@+id/imageViewCurrentCourse"
         android:layout_width="138dp"
         android:layout_height="125dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +84,7 @@
         app:layout_constraintVertical_bias="0.389" />
 
     <ImageView
-        android:id="@+id/imageView20"
+        android:id="@+id/imageViewAddSubjectStudent"
         android:layout_width="125dp"
         android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"

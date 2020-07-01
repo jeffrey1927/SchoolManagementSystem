@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignIn;
     FirebaseAuth firebaseAuth;
     private ProgressBar progressBar;
+    private RadioButton radioBtnStudent, radioBtnStaff;
     DatabaseReference databaseReferenceStaff,databaseReferenceStudent;
 
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -45,106 +48,124 @@ public class LoginActivity extends AppCompatActivity {
         emailId  = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
         btnSignIn = findViewById(R.id.button);
-
-
+        radioBtnStudent = findViewById(R.id.radioButtonStudent);
+        radioBtnStaff = findViewById(R.id.radioButtonStaff);
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
-
-
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String userLoginEmail = emailId.getText().toString();
-                String userLoginPassword = password.getText().toString();
+                if (radioBtnStudent.isChecked()){
+                    String studentLoginEmail = emailId.getText().toString();
+                    String studentLoginPassword = password.getText().toString();
+
+                    if (studentLoginEmail.isEmpty()) {
+                        emailId.setError("Email Required");
+                        emailId.requestFocus();
+                        return;
+                    }else if (!Patterns.EMAIL_ADDRESS.matcher(studentLoginEmail).matches()) {
+                        emailId.setError(getString(R.string.input_error_email_invalid));
+                        emailId.requestFocus();
+                        return;
+                    }else if (studentLoginPassword.isEmpty()) {
+                        password.setError(getString(R.string.input_error_password));
+                        password.requestFocus();
+                        return;
+                    }else {
+                        loginStudent(studentLoginEmail,studentLoginPassword);
+                        progressBar.setVisibility(View.VISIBLE);
+
+                    }
 
 
-                if(!TextUtils.isEmpty(userLoginEmail)&& !TextUtils.isEmpty(userLoginPassword)) {
 
-                    loginUser(userLoginEmail, userLoginPassword);
-                }else{
-                    Toast.makeText(LoginActivity.this, "Failed Login: Empty Inputs are not allowed", Toast.LENGTH_SHORT).show();
+
+                }else if (radioBtnStaff.isChecked()){
+                    String staffLoginEmail = emailId.getText().toString();
+                    String staffLoginPassword = password.getText().toString();
+                    if (staffLoginEmail.isEmpty()) {
+                        emailId.setError("Email Required");
+                        emailId.requestFocus();
+                        return;
+                    }else if (!Patterns.EMAIL_ADDRESS.matcher(staffLoginEmail).matches()) {
+                        emailId.setError(getString(R.string.input_error_email_invalid));
+                        emailId.requestFocus();
+                        return;
+                    }else if (staffLoginPassword.isEmpty()) {
+                        password.setError(getString(R.string.input_error_password));
+                        password.requestFocus();
+                        return;
+                    }else {
+                        loginStaff(staffLoginEmail,staffLoginPassword);
+                        progressBar.setVisibility(View.VISIBLE);
+
+                    }
+
+                }
+            }
+        });
+    }
+    private void loginStudent(final String studentLoginEmail, final String studentLoginPassword){
+        firebaseAuth.signInWithEmailAndPassword(studentLoginEmail, studentLoginPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Intent intentStudent = new Intent(LoginActivity.this, StudentActivity.class);
+                    startActivity(intentStudent);
+                    intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 progressBar.setVisibility(View.VISIBLE);
             }
-
         });
-
     }
 
-    private void loginUser(final String userLoginEmail, final String userLoginPassword) {
-        firebaseAuth.signInWithEmailAndPassword(userLoginEmail, userLoginPassword)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+    private void loginStaff(final String staffLoginEmail, final String staffLoginPassword){
+        firebaseAuth.signInWithEmailAndPassword(staffLoginEmail, staffLoginPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    final String RegisteredUserID = currentUser.getUid();
+                    databaseReferenceStaff = FirebaseDatabase.getInstance().getReference().child("Staff").child(RegisteredUserID);
+                    databaseReferenceStaff.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
+                            if (userType.equals("Staff")) {
+                                Intent intentStudent = new Intent(LoginActivity.this, StaffActivity.class);
+                                startActivity(intentStudent);
+                                intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                finish();
 
-                        if (task.isSuccessful()) {
+                            } else if (userType.equals("Admin")) {
+                                Intent intentStaff = new Intent(LoginActivity.this, AdminActivity.class);
+                                startActivity(intentStaff);
+                                intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                finish();
 
-                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                            String RegisteredUserID = currentUser.getUid();
+                            }else {
+                                Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            progressBar.setVisibility(View.VISIBLE);
 
-                            databaseReferenceStaff = FirebaseDatabase.getInstance().getReference().child("Staff").child(RegisteredUserID);
-                            databaseReferenceStudent = FirebaseDatabase.getInstance().getReference().child("Student").child(RegisteredUserID);
-
-                            databaseReferenceStudent.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
-
-                                    if (userType.equals("Student")){
-                                        Intent intentStudent = new Intent(LoginActivity.this, StudentActivity.class);
-                                        startActivity(intentStudent);
-                                        intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        finish();
-                                    }else {
-                                        Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
-                            databaseReferenceStaff.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
-                                        if (userType.equals("Staff")) {
-                                        Intent intentStaff = new Intent(LoginActivity.this, StaffActivity.class);
-                                        startActivity(intentStaff);
-                                        intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        finish();
-
-
-                                    } else if (userType.equals("Admin")) {
-                                        Intent intentAdmin = new Intent(LoginActivity.this, AdminActivity.class);
-                                        startActivity(intentAdmin);
-                                        intentAdmin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        finish();
-
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
                         }
-                    }
 
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                        }
+                    });
 
+                }
+
+            }
+        });
     }
 }

@@ -21,7 +21,9 @@
         <activity android:name=".StaffActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".StudentActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RegisterActivity" >
+
+            </activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

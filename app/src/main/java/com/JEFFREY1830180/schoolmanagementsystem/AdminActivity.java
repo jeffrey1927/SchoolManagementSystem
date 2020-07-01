@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageView signUp;
+    ImageView signUp,course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,9 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         signUp = findViewById(R.id.imageViewSignUp);
+        course = findViewById(R.id.imageViewAdminCourse);
+
+
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -28,6 +31,16 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(intentToRegister);
             }
         });
+
+        course.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentToCourse = new Intent(AdminActivity.this,CourseActivity.class);
+                startActivity(intentToCourse);
+            }
+        });
+
+
     }
 
 
