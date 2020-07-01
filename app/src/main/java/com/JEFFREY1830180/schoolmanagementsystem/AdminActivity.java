@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageView signUp,course;
+    ImageView signUp,course,home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
