@@ -18,7 +18,6 @@ public class Course {
         Subject = subject;
         SubjectId = subjectId;
 
-
     }
 
 }

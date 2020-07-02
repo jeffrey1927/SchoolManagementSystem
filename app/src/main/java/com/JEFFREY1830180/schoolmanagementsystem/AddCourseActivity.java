@@ -1,6 +1,7 @@
 package com.JEFFREY1830180.schoolmanagementsystem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.TextViewCompat;
 
 import android.os.Bundle;
 

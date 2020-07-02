@@ -13,10 +13,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageView signUp,course,home;
+    ImageView signUp,course;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
