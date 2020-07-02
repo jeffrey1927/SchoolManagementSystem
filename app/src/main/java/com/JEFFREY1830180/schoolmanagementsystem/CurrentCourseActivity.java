@@ -35,7 +35,7 @@ public class CurrentCourseActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String value = dataSnapshot.getValue(Course.class).toString();
                 arrayList.add(value);
-                arrayAdapter.notifyDataSetChanged();
+
             }
 
             @Override
