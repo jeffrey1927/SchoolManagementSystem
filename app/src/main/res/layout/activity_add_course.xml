@@ -8,7 +8,7 @@
     tools:context=".AddCourseActivity">
 
     <EditText
-        android:id="@+id/editTextTextPersonName5"
+        android:id="@+id/editTextSubject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="0.057" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/editTextTextIntake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -51,7 +51,7 @@
         app:layout_constraintVertical_bias="0.237" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName4"
+        android:id="@+id/editTextTextCourseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -65,10 +65,11 @@
         app:layout_constraintVertical_bias="0.433" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonAddIntake"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
+        android:onClick="btnAddIntake"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
@@ -77,7 +78,7 @@
         app:layout_constraintVertical_bias="0.238" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/buttonAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
@@ -89,7 +90,7 @@
         app:layout_constraintVertical_bias="0.434" />
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/buttonAddSubject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
@@ -101,8 +102,8 @@
         app:layout_constraintVertical_bias="0.642" />
 
     <Spinner
-        android:id="@+id/spinner3"
-        android:layout_width="409dp"
+        android:id="@+id/spinnerIntake"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,14 +112,14 @@
         app:layout_constraintVertical_bias="0.343" />
 
     <Spinner
-        android:id="@+id/spinner4"
-        android:layout_width="409dp"
+        android:id="@+id/spinnerCourse"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.546" />
+        app:layout_constraintVertical_bias="0.537" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
