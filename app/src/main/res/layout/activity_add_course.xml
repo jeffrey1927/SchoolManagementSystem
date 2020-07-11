@@ -81,6 +81,7 @@
         android:id="@+id/buttonAddCourse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="btnAddCourse"
         android:text="Add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
