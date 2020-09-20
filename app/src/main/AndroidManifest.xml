@@ -11,7 +11,17 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterChooseActivity"></activity>
+        <activity android:name=".StudentOwnSubjectActivity"></activity>
+        <activity android:name=".StudentTakeNewSubjectActivity" />
+        <activity android:name=".StudentTuitionFeeActivity" />
+        <activity android:name=".StudentResultActivity" />
+        <activity android:name=".StudentCourseActivity" />
+        <activity android:name=".StudentTakeAttendanceActivity" />
+        <activity android:name=".AttendanceActivity" />
+        <activity android:name=".WriteStudentResultActivity" />
+        <activity android:name=".TuitionFee" />
+        <activity android:name=".AddSubjectToStudent" />
+        <activity android:name=".RegisterChooseActivity" />
         <activity android:name=".CurrentCourseActivity" />
         <activity android:name=".AddCourseActivity" />
         <activity android:name=".CourseActivity" />
@@ -21,9 +31,7 @@
         <activity android:name=".StaffActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".StudentActivity" />
-        <activity android:name=".RegisterActivity" >
-
-            </activity>
+        <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

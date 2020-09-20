@@ -2,22 +2,15 @@ package com.JEFFREY1830180.schoolmanagementsystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.TextViewCompat;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -25,10 +18,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class AddCourseActivity extends AppCompatActivity {
-    Spinner spinnerIntake,spinnerCourse;
-    EditText editTextIntake,editTextCourse,editTextSubject;
-    String textData = "";
-    String textCourseData = "";
+    EditText editTextIntake,editTextCourse,editTextSubjectCode,editTextSubjectName;
+    String intakeData,courseData,subjectCodeData,subjectNameData = "";
     DatabaseReference databaseReference;
     ValueEventListener listener;
     ArrayAdapter<String> intakeAdapter,courseAdapter,subjectAdapter;
@@ -39,63 +30,53 @@ public class AddCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_course);
-        spinnerCourse = findViewById(R.id.spinnerCourse);
-        spinnerIntake = findViewById(R.id.spinnerIntake);
         editTextCourse = findViewById(R.id.editTextTextCourseName);
         editTextIntake = findViewById(R.id.editTextTextIntake);
-        editTextSubject = findViewById(R.id.editTextSubject);
+        editTextSubjectCode = findViewById(R.id.editTextSubjectCode);
+        editTextSubjectName = findViewById(R.id.editTextSubjectName);
         databaseReference = FirebaseDatabase.getInstance().getReference("Course");
 
         intakeDataList = new ArrayList<>();
         intakeAdapter = new ArrayAdapter<String>(AddCourseActivity.this,android.R.layout.simple_spinner_dropdown_item,intakeDataList);
         courseDataList = new ArrayList<>();
-        courseAdapter = new ArrayAdapter<String>(AddCourseActivity.this,android.R.layout.simple_spinner_dropdown_item,courseDataList);
-        spinnerIntake.setAdapter(intakeAdapter);
-        spinnerCourse.setAdapter(courseAdapter);
-        retrieveIntakeData();
+        courseAdapter = new ArrayAdapter<String>(AddCourseActivity.this,android.R.layout.simple_spinner_dropdown_item,subjectDataList);
+        subjectDataList = new ArrayList<>();
+        subjectAdapter = new ArrayAdapter<String>(AddCourseActivity.this,android.R.layout.simple_spinner_dropdown_item,subjectDataList);
+
 
 
 
     }
     public void btnAddIntake(View view) {
-        textData = editTextIntake.getText().toString().trim();
-        if (textData.isEmpty()){
+        intakeData = editTextIntake.getText().toString().trim();
+        courseData = editTextCourse.getText().toString().trim();
+        subjectCodeData = editTextSubjectCode.getText().toString().trim();
+        subjectNameData = editTextSubjectName.getText().toString().trim();
+        if (intakeData.isEmpty()){
+            Toast.makeText(AddCourseActivity.this,"Please Key In Data",Toast.LENGTH_SHORT).show();
+        }else if (courseData.isEmpty()){
+            Toast.makeText(AddCourseActivity.this,"Please Key In Data",Toast.LENGTH_SHORT).show();
+        }
+        else if (subjectCodeData.isEmpty()){
+            Toast.makeText(AddCourseActivity.this,"Please Key In Data",Toast.LENGTH_SHORT).show();
+        }
+        else if (subjectNameData.isEmpty()){
             Toast.makeText(AddCourseActivity.this,"Please Key In Data",Toast.LENGTH_SHORT).show();
         }
         else {
-            databaseReference.child("Intake").setValue(textData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            databaseReference.child("Intake").child(intakeData).child(courseData).child(subjectCodeData).setValue(subjectNameData).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     editTextIntake.setText("");
+                    editTextCourse.setText("");
+                    editTextSubjectCode.setText("");
+                    editTextSubjectName.setText("");
                     intakeDataList.clear();
-                    retrieveIntakeData();
                     intakeAdapter.notifyDataSetChanged();
-                    Toast.makeText(AddCourseActivity.this, "Intake Inserted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddCourseActivity.this, "Course Inserted", Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
-
-    public void retrieveIntakeData(){
-
-        listener = databaseReference.child("Intake").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot item:dataSnapshot.getChildren()){
-
-                    intakeDataList.add(item.getValue().toString());
-                }
-                intakeAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
 
 }

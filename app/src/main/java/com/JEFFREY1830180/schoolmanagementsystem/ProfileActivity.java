@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,13 +23,18 @@ import com.google.firebase.database.ValueEventListener;
 public class ProfileActivity extends AppCompatActivity {
 
 
-    private TextView textViewName,textViewShowEmail,textViewShowAccount,textViewChangePass;
+    private TextView textViewShowName,textViewShowEmail,textViewShowAccount,textViewChangePass;
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    String RegisteredUserID = currentUser.getUid();
+    DatabaseReference databaseReferenceStaff,databaseReferenceStudent,databaseReference;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        textViewName = findViewById(R.id.textViewName);
+        textViewShowName = findViewById(R.id.textViewName);
         textViewShowEmail = findViewById(R.id.textViewShowEmail);
         textViewShowAccount = findViewById(R.id.textViewShowAccount);
         textViewChangePass = findViewById(R.id.textViewChangePass);
@@ -39,22 +45,24 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this,ChangePasswordActivity.class);
                 startActivity(intent);
 
-
-
             }
         });
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String RegisteredUserID = currentUser.getUid();
 
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(RegisteredUserID);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+
+
+    }
+
+
+    public void student(){
+        databaseReferenceStudent = FirebaseDatabase.getInstance().getReference().child("Users").child("Students").child(RegisteredUserID);
+        databaseReferenceStudent.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.child("Name").getValue().toString();
                 String email = dataSnapshot.child("Email").getValue().toString();
                 String account = dataSnapshot.child("TypeOfAccount").getValue().toString();
-                textViewName.setText(name);
+                textViewShowName.setText(name);
                 textViewShowEmail.setText("Email: "+email);
                 textViewShowAccount.setText("Account Type: "+account);
 
@@ -65,8 +73,57 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
 
 
+    public void staff(){
+        databaseReferenceStaff = FirebaseDatabase.getInstance().getReference("Users").child("Staff").child(RegisteredUserID);
+        databaseReferenceStaff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("Name").getValue().toString();
+                String email = dataSnapshot.child("Email").getValue().toString();
+                String account = dataSnapshot.child("TypeOfAccount").getValue().toString();
+                textViewShowName.setText(name);
+                textViewShowEmail.setText("Email: "+email);
+                textViewShowAccount.setText("Account Type: "+account);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void account(){
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String userTypeStudent = dataSnapshot.child("Students").child(RegisteredUserID).child("TypeOfAccount").getValue().toString();
+                String studentName = dataSnapshot.child("Students").child(RegisteredUserID).child("Name").getValue().toString();
+                String studentEmail = dataSnapshot.child("Students").child(RegisteredUserID).child("Email").getValue().toString();
+                String studentAccount = dataSnapshot.child("Students").child(RegisteredUserID).child("TypeOfAccount").getValue().toString();
+
+                String userTypeStaff = dataSnapshot.child("Staff").child(RegisteredUserID).child("TypeOfAccount").getValue().toString();
+                String userTypeAdmin = dataSnapshot.child("Admin").child(RegisteredUserID).child("TypeOfAccount").getValue().toString();
+
+                if (userTypeStudent.equals("Student")) {
+
+                    textViewShowName.setText(studentName);
+                    textViewShowEmail.setText("Email: "+studentEmail);
+                    textViewShowAccount.setText("Account Type: "+studentAccount);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

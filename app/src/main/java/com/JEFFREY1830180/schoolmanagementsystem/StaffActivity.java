@@ -7,14 +7,38 @@ import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 public class StaffActivity extends AppCompatActivity {
+
+    ImageView attendance,studentResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff);
+
+        attendance = findViewById(R.id.imageView11);
+        studentResult = findViewById(R.id.imageView12);
+
+        studentResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentToRegister = new Intent(StaffActivity.this,WriteStudentResultActivity.class);
+                startActivity(intentToRegister);
+            }
+        });
+
+        attendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentToRegister = new Intent(StaffActivity.this,AttendanceActivity.class);
+                startActivity(intentToRegister);
+            }
+        });
+
+
     }
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
@@ -24,10 +48,7 @@ public class StaffActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    case R.id.profile:
-                        Intent intentToProfile =new Intent(StaffActivity.this,ProfileActivity.class);
-                        startActivity(intentToProfile);
-                        return true;
+
                     case R.id.logout:
                         Intent intentToLogout =new Intent(StaffActivity.this,LoginActivity.class);
                         startActivity(intentToLogout);

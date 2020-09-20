@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageView signUp,course;
+    ImageView signUp,course,tuitionFee;
 
 
     @Override
@@ -24,6 +24,7 @@ public class AdminActivity extends AppCompatActivity {
 
         signUp = findViewById(R.id.imageViewSignUp);
         course = findViewById(R.id.imageViewAdminCourse);
+        tuitionFee = findViewById(R.id.imageView9);
 
 
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -37,7 +38,15 @@ public class AdminActivity extends AppCompatActivity {
         course.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentToCourse = new Intent(AdminActivity.this,CourseActivity.class);
+                Intent intentToCourse = new Intent(AdminActivity.this,AddCourseActivity.class);
+                startActivity(intentToCourse);
+            }
+        });
+
+        tuitionFee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentToCourse = new Intent(AdminActivity.this,TuitionFee.class);
                 startActivity(intentToCourse);
             }
         });
@@ -54,10 +63,7 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()){
-                    case R.id.profile:
-                        Intent intentToProfile =new Intent(AdminActivity.this,ProfileActivity.class);
-                        startActivity(intentToProfile);
-                        return true;
+
                     case R.id.logout:
                         Intent intentToLogout =new Intent(AdminActivity.this,LoginActivity.class);
                         startActivity(intentToLogout);

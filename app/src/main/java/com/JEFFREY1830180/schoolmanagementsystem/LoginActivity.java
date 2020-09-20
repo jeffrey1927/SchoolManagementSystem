@@ -28,12 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
+    TextView textViewShowName,textViewShowEmail,textViewShowAccount;
     EditText emailId, password;
     Button btnSignIn;
     FirebaseAuth firebaseAuth;
     private ProgressBar progressBar;
-    private RadioButton radioBtnStudent, radioBtnStaff;
-    DatabaseReference databaseReferenceStaff,databaseReferenceStudent;
+    DatabaseReference databaseReferenceStaff,databaseReferenceStudent,databaseReference;
 
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -45,123 +45,76 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        textViewShowName = findViewById(R.id.textViewName);
+        textViewShowEmail = findViewById(R.id.textViewShowEmail);
+        textViewShowAccount = findViewById(R.id.textViewShowAccount);
         emailId  = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextTextPassword);
         btnSignIn = findViewById(R.id.button);
-        radioBtnStudent = findViewById(R.id.radioButtonStudent);
-        radioBtnStaff = findViewById(R.id.radioButtonStaff);
         progressBar = findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.GONE);
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (radioBtnStudent.isChecked()){
-                    String studentLoginEmail = emailId.getText().toString();
-                    String studentLoginPassword = password.getText().toString();
 
-                    if (studentLoginEmail.isEmpty()) {
+                    String loginEmail = emailId.getText().toString();
+                    String loginPassword = password.getText().toString();
+
+                    if (loginEmail.isEmpty()) {
                         emailId.setError("Email Required");
                         emailId.requestFocus();
                         return;
-                    }else if (!Patterns.EMAIL_ADDRESS.matcher(studentLoginEmail).matches()) {
+                    }else if (!Patterns.EMAIL_ADDRESS.matcher(loginEmail).matches()) {
                         emailId.setError(getString(R.string.input_error_email_invalid));
                         emailId.requestFocus();
                         return;
-                    }else if (studentLoginPassword.isEmpty()) {
+                    }else if (loginPassword.isEmpty()) {
                         password.setError(getString(R.string.input_error_password));
                         password.requestFocus();
                         return;
                     }else {
-                        loginStudent(studentLoginEmail,studentLoginPassword);
+                        login(loginEmail,loginPassword);
                         progressBar.setVisibility(View.VISIBLE);
 
                     }
 
-
-
-
-                }else if (radioBtnStaff.isChecked()){
-                    String staffLoginEmail = emailId.getText().toString();
-                    String staffLoginPassword = password.getText().toString();
-                    if (staffLoginEmail.isEmpty()) {
-                        emailId.setError("Email Required");
-                        emailId.requestFocus();
-                        return;
-                    }else if (!Patterns.EMAIL_ADDRESS.matcher(staffLoginEmail).matches()) {
-                        emailId.setError(getString(R.string.input_error_email_invalid));
-                        emailId.requestFocus();
-                        return;
-                    }else if (staffLoginPassword.isEmpty()) {
-                        password.setError(getString(R.string.input_error_password));
-                        password.requestFocus();
-                        return;
-                    }else {
-                        loginStaff(staffLoginEmail,staffLoginPassword);
-                        progressBar.setVisibility(View.VISIBLE);
-
-                    }
-
-                }
             }
         });
     }
-    private void loginStudent(final String studentLoginEmail, final String studentLoginPassword){
-        firebaseAuth.signInWithEmailAndPassword(studentLoginEmail, studentLoginPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+    private void login(final String loginEmail, final String loginPassword){
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        firebaseAuth.signInWithEmailAndPassword(loginEmail,loginPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Intent intentStudent = new Intent(LoginActivity.this, StudentActivity.class);
-                    startActivity(intentStudent);
-                    intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    finish();
+                if(task.isSuccessful()){
+                    String[] split = loginEmail.split ("@");
+                    String domain = split[1]; //This Will Give You The Domain After '@'
+
+                    if (domain.equals("student.com")){
+                        Intent intentStaff= new Intent(LoginActivity.this, StudentActivity.class);
+                        startActivity(intentStaff);
+                        intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        finish();
+                    }
+                    else if (domain.equals("staff.com")){
+                        Intent intentStaff= new Intent(LoginActivity.this, StaffActivity.class);
+                        startActivity(intentStaff);
+                        intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        finish();
+                    }
+                    else if (domain.equals("admin.com")){
+                        Intent intentAdmin = new Intent(LoginActivity.this, AdminActivity.class);
+                        startActivity(intentAdmin);
+                        intentAdmin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        finish();
+                    }
                 }
                 else {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
                     return;
-                }
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    private void loginStaff(final String staffLoginEmail, final String staffLoginPassword){
-        firebaseAuth.signInWithEmailAndPassword(staffLoginEmail, staffLoginPassword).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    final String RegisteredUserID = currentUser.getUid();
-                    databaseReferenceStaff = FirebaseDatabase.getInstance().getReference().child("Staff").child(RegisteredUserID);
-                    databaseReferenceStaff.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String userType = dataSnapshot.child("TypeOfAccount").getValue().toString();
-                            if (userType.equals("Staff")) {
-                                Intent intentStudent = new Intent(LoginActivity.this, StaffActivity.class);
-                                startActivity(intentStudent);
-                                intentStudent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                finish();
-
-                            } else if (userType.equals("Admin")) {
-                                Intent intentStaff = new Intent(LoginActivity.this, AdminActivity.class);
-                                startActivity(intentStaff);
-                                intentStaff.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                finish();
-
-                            }else {
-                                Toast.makeText(LoginActivity.this, "Failed Login. Please Try Again", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            progressBar.setVisibility(View.VISIBLE);
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
 
                 }
 

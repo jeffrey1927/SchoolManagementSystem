@@ -51,13 +51,14 @@ public class RegisterActivity extends AppCompatActivity  {
         progressBar.setVisibility(View.GONE);
         registerBtn = findViewById(R.id.button2);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Staff");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child("Staff");
 
         mAuth = FirebaseAuth.getInstance();
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
 
                 String accountType = "";
                 final String name = editTextPersonName.getText().toString();
@@ -131,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity  {
                     editTextConformPassword.requestFocus();
                     return;
                 }
-                progressBar.setVisibility(View.VISIBLE);
+
 
 
                 final String finalAccountType = accountType;
@@ -148,23 +149,18 @@ public class RegisterActivity extends AppCompatActivity  {
 
 
                                     );
-
-                                    FirebaseDatabase.getInstance().getReference("Staff")
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    FirebaseDatabase.getInstance().getReference("Users").child(finalAccountType).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(information).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             progressBar.setVisibility(View.GONE);
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(RegisterActivity.this, getString(R.string.registration_success), Toast.LENGTH_LONG).show();
-
-
-                                            } else {
-                                                Toast.makeText(RegisterActivity.this, "Registration Not Success", Toast.LENGTH_LONG).show();
-                                            }
+                                            Toast.makeText(RegisterActivity.this, getString(R.string.registration_success), Toast.LENGTH_LONG).show();
                                         }
                                     });
 
+                                }
+                                else {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(RegisterActivity.this, "Registration Not Success", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
