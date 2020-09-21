@@ -125,14 +125,16 @@ public class AttendanceActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 attendanceList.clear();
-                attendanceListener = databaseReference.addValueEventListener(new ValueEventListener() {
+                attendanceListener = databaseReference.child("Attendance").child(dateSpinner.getSelectedItem().toString()).child(subjectSpinner.getSelectedItem().toString()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String subject = snapshot.child("Attendance").child(dateSpinner.getSelectedItem().toString()).child(subjectSpinner.getSelectedItem().toString()).getValue().toString();
-                        attendanceList.add(subject);
+
+                        for (DataSnapshot item:snapshot.getChildren()){
+                            String studentId = item.getKey();
+                            String subject = snapshot.child("Attendance").child(dateSpinner.getSelectedItem().toString()).child(subjectSpinner.getSelectedItem().toString()).child(studentId).getKey();
+                            attendanceList.add(studentId);
+                        }
                         attendanceAdapter.notifyDataSetChanged();
-
-
 
                     }
 

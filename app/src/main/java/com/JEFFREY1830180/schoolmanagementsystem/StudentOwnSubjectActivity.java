@@ -87,11 +87,13 @@ public class StudentOwnSubjectActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 subjectTakeList.clear();
-                databaseReference.addValueEventListener(new ValueEventListener() {
+                databaseReference.child("Subject Take").child(spinner.getSelectedItem().toString()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String subjectId = snapshot.child("Subject Take").child(spinner.getSelectedItem().toString()).getValue().toString();
-                        subjectTakeList.add(subjectId);
+                        for (DataSnapshot item:snapshot.getChildren()){
+                            String subjectId = item.getKey();
+                            subjectTakeList.add(subjectId);
+                        }
                         subjectTakeAdapter.notifyDataSetChanged();
                     }
 
