@@ -22,9 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class StudentTakeAttendanceActivity extends AppCompatActivity {
 
@@ -36,13 +39,25 @@ public class StudentTakeAttendanceActivity extends AppCompatActivity {
     ArrayAdapter<String> studentCourseAdapter,subjectIdAdapter;
     TextView date,time;
 
-    String currentDate = java.text.DateFormat.getDateInstance().format(new Date());
-    String currentTime = java.text.DateFormat.getTimeInstance().format(new Date());
-
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     String userID = currentUser.getUid();
 
+    public static final String DATE_FORMAT_1 = "HH:mm";
+    public static final String DATE_FORMAT_2 = "dd-MM-yyyy";
 
+    public static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_2);
+        dateFormat.setTimeZone(TimeZone.getDefault());
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
+    }
+
+    public static String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_1);
+        dateFormat.setTimeZone(TimeZone.getDefault());
+        Date today = Calendar.getInstance().getTime();
+        return dateFormat.format(today);
+    }
 
 
     @Override
@@ -66,8 +81,8 @@ public class StudentTakeAttendanceActivity extends AppCompatActivity {
         subjectIdAdapter = new ArrayAdapter<String>(StudentTakeAttendanceActivity.this,android.R.layout.simple_spinner_dropdown_item,subjectIdDataList);
         subjectIdSpinner.setAdapter(subjectIdAdapter);
 
-        time.setText(currentTime);
-        date.setText(currentDate);
+        time.setText("Time:"+getCurrentTime());
+        date.setText("Date:"+getCurrentDate());
 
         retrieveStudentData();
     }
@@ -148,8 +163,8 @@ public class StudentTakeAttendanceActivity extends AppCompatActivity {
                 String currentCourse = snapshot.child("Course").getValue().toString();
 
 
-                databaseReference.child("Attendance").child(currentDate).child(subjectId).child(studentName).child("Student Id").setValue(studentId);
-                databaseReference.child("Attendance").child(currentDate).child(subjectId).child(studentName).child("Time").setValue(currentTime).addOnCompleteListener(new OnCompleteListener<Void>() {
+                databaseReference.child("Attendance").child(getCurrentDate().toString()).child(subjectId).child(studentName).child("Student Id").setValue(studentId);
+                databaseReference.child("Attendance").child(getCurrentDate().toString()).child(subjectId).child(studentName).child("Time").setValue(getCurrentTime().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(StudentTakeAttendanceActivity.this, "Attendance Record Successful", Toast.LENGTH_LONG).show();

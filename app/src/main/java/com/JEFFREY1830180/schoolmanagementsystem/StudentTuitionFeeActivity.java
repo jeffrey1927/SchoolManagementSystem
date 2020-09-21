@@ -134,7 +134,7 @@ public class StudentTuitionFeeActivity extends AppCompatActivity {
                         String studentCourse = snapshot.child("Users").child("Students").child(userID).child("Course").getValue().toString();
                         String studentFee = snapshot.child("Users").child("Students(Backend Process Data)").child(studentIntake).child(studentCourse).child(studentId).child("Tuition Fee").child("Unpaid").child(spinnerIntake.getSelectedItem().toString()).getValue().toString();
 
-                        textViewFee.setText(studentFee);
+                        textViewFee.setText("RM"+studentFee);
                     }
 
                     @Override

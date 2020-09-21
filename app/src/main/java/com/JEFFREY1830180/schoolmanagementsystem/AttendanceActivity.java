@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,9 +21,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AttendanceActivity extends AppCompatActivity {
+
+
+
+
+
     ListView listView;
+    ViewGroup viewGroup;
     Spinner dateSpinner,subjectSpinner;
 
     DatabaseReference databaseReference;
@@ -53,7 +62,7 @@ public class AttendanceActivity extends AppCompatActivity {
         subjectSpinner.setAdapter(subjectAdapter);
 
         attendanceList = new ArrayList<>();
-        attendanceAdapter = new ArrayAdapter<String>(AttendanceActivity.this,android.R.layout.simple_spinner_dropdown_item,attendanceList);
+        attendanceAdapter = new ArrayAdapter<String>(AttendanceActivity.this,android.R.layout.simple_list_item_1,attendanceList);
         listView.setAdapter(attendanceAdapter);
 
         retrieveAttendanceData();
@@ -122,6 +131,9 @@ public class AttendanceActivity extends AppCompatActivity {
                         String subject = snapshot.child("Attendance").child(dateSpinner.getSelectedItem().toString()).child(subjectSpinner.getSelectedItem().toString()).getValue().toString();
                         attendanceList.add(subject);
                         attendanceAdapter.notifyDataSetChanged();
+
+
+
                     }
 
                     @Override
@@ -138,8 +150,6 @@ public class AttendanceActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
+
 }
